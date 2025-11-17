@@ -40,7 +40,6 @@ app.get("/", (req, res) => {
   res.send("hello from backend");
 });
 
-
 // Local development ke liye
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
@@ -48,5 +47,6 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// Vercel ke liye Express app ko serverless handler ke taur par export karo
-export const handler = serverless(app);
+// Vercel ke liye Express app ko serverless handler ke taur par DEFAULT export karo
+// (Vercel expects the default export to be a function or server)
+export default serverless(app);
