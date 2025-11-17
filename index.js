@@ -13,7 +13,7 @@ const app = express();
 DbCon();
 
 const whitelist = [
-  "https://mern-note-app-frontend-zeta.vercel.app",
+  "https://note-frontend-rashidkhan1234567s-projects.vercel.app/",
   "http://localhost:5173",
 ];
 
