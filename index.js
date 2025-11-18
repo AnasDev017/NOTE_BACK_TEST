@@ -12,10 +12,14 @@ const app = express();
 
 DbCon();
 
-const whitelist = [
-  "https://note-frontend-rashidkhan1234567s-projects.vercel.app/",
-  "http://localhost:5173",
-];
+// Read allowed origins from env (comma-separated) for flexibility in deployments
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || "";
+const defaultOrigins = ["http://localhost:5173"];
+const whitelist = allowedOriginsEnv
+  ? allowedOriginsEnv.split(",").map((o) => o.trim())
+  : defaultOrigins;
+
+console.log("CORS whitelist:", whitelist);
 
 app.use(
   cors({
@@ -26,6 +30,7 @@ app.use(
       if (whitelist.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
+        console.error("Blocked by CORS, origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },

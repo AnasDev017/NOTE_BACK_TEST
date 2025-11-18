@@ -1,12 +1,29 @@
 import mongoose from "mongoose";
 
-const DbCon=async()=>{
-    try {
-        mongoose.connect("mongodb+srv://anastahirhussain7_db_user:HFguLhncgCI9wc5E@cluster0.ekz2hmy.mongodb.net/notesApp?appName=Cluster0")
-        console.log('Mongodb is connected')
-        
-    } catch (error) {
-        console.log("Error in mongodb connection",error)
+// Use a cached connection across serverless invocations to avoid
+// creating a new connection on every cold start.
+const DbCon = async () => {
+  try {
+    const mongoUri = process.env.MONGO_URI;
+    if (!mongoUri) {
+      throw new Error("MONGO_URI is not defined in environment");
     }
-}
-export default DbCon
+
+    // If mongoose already connected, reuse it
+    if (mongoose.connection.readyState === 1) {
+      console.log("Mongodb already connected (reused)");
+      return;
+    }
+
+    // For serverless, just await the connection. Newer drivers ignore those options.
+    await mongoose.connect(mongoUri);
+
+    console.log("Mongodb is connected");
+  } catch (error) {
+    console.error("Error in mongodb connection", error);
+    // rethrow so calling code can react (and logs will show)
+    throw error;
+  }
+};
+
+export default DbCon;
