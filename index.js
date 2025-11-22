@@ -14,7 +14,7 @@ DbCon();
 
 // Read allowed origins from env (comma-separated) for flexibility in deployments
 const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || "";
-const defaultOrigins = ["http://localhost:5173"];
+const defaultOrigins = ["http://localhost:5173","https://note-front-test.vercel.app"];
 const whitelist = allowedOriginsEnv
   ? allowedOriginsEnv.split(",").map((o) => o.trim())
   : defaultOrigins;
