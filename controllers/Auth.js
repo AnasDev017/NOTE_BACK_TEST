@@ -1,6 +1,11 @@
 import UserModel from "../models/User.js";
 import bycript from "bcryptjs";
 import jwt from "jsonwebtoken";
+import transporter from "../utils/SendEmail.js";
+transporter.verify((err, success) => {
+  if (err) console.log("SMTP Error:", err);
+  else console.log("SMTP Ready");
+});
 
 const Register = async (req, res) => {
   try {
@@ -22,7 +27,50 @@ const Register = async (req, res) => {
       email,
       password: hasePassword,
     });
-    await NewUser.save();
+    const sendMail = async()=>{
+      const info = await transporter.sendMail({
+        from: 'anastahirhussain7@gmail.com',
+        to: NewUser.email,
+        subject: "Wellcome!",
+        html: `
+        <div style="width:100%;background:#f5f5f5;padding:30px 0;font-family:Arial;">
+          <div style="max-width:600px;margin:auto;background:#fff;border-radius:12px;overflow:hidden;">
+            
+            <div style="background:#111827;padding:30px;color:#fff;text-align:center;">
+              <h1 style="margin:0;font-size:28px;">
+                Welcome to <span style="color:#60a5fa;">Digitix</span>!
+              </h1>
+            </div>
+      
+            <div style="padding:30px;color:#333;">
+              <h2>Hey 👋</h2>
+              <p style="line-height:1.6;font-size:15px;">
+                We’re excited to have you on board!  
+                Thanks for joining our platform — you're officially part of the family now 😎🔥
+              </p>
+      
+              <p style="line-height:1.6;font-size:15px;">
+                You’ll now get updates, new features and exclusive perks.
+                If you ever need help, we’re just one reply away.
+              </p>
+      
+              <a href="#" style="display:inline-block;margin-top:20px;padding:12px 20px;background:#2563eb;color:#fff;text-decoration:none;border-radius:6px;font-size:15px;">
+                Get Started
+              </a>
+            </div>
+      
+            <div style="padding:20px;background:#f3f4f6;color:#555;text-align:center;font-size:13px;">
+              © 2025 Digitix. All rights reserved.
+            </div>
+      
+          </div>
+        </div>
+      `      
+      });
+      console.log("Message sent:", info.messageId);
+    }
+    sendMail()
+        await NewUser.save();
     res
       .status(200)
       .json({
